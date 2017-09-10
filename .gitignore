@@ -1,0 +1,11 @@
+# editors configs
+.vscode
+.idea
+
+# build output
+build
+dist
+target
+
+# dependencies
+node_modules
