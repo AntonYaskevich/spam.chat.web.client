@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const path = require('path');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const sourcePath = path.join(__dirname, '../../src');
 const buildPath = path.join(__dirname, '../../dist');
@@ -29,24 +30,24 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [
-          {
-            loader: 'style-loader',
-          },
-          {
-            loader: 'css-loader?modules&importLoaders=1',
-          },
-          {
-            loader: 'postcss-loader',
-            options: {
-              plugins: () => [
-                require('postcss-import')(),
-                require('postcss-url')(),
-                require('postcss-cssnext')(),
-                require('postcss-reporter')(),
-              ],
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            {
+              loader: 'css-loader',
             },
-          }],
+            {
+              loader: 'postcss-loader',
+              options: {
+                plugins: () => [
+                  require('postcss-import')(),
+                  require('postcss-url')(),
+                  require('postcss-cssnext')(),
+                  require('postcss-reporter')(),
+                ],
+              },
+            }],
+        }),
       },
       {
         test: /\.svg$/,
@@ -82,6 +83,7 @@ module.exports = {
       filename: 'index.html',
       template: 'index.html',
     }),
+    new ExtractTextPlugin('styles.css'),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV),
